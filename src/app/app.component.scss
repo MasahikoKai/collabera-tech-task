@@ -1,0 +1,13 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+}
+
+.container table {
+  thead tr th {
+    font-size: 18px;
+    padding: 5px;
+    text-align: left;
+  }
+}
