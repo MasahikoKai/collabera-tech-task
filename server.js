@@ -4,27 +4,27 @@ const app = express();
 const PORT = 3000;
 
 const PRICES = [
+    {
+     id: 1,
+     instrumentName: 'EUR/USD',
+     bid: '1.1000',
+     ask: '1.2000',
+     timestamp: Date.now()
+   },
   {
-    id: 1,
-    instrumentName: 'EUR/USD',
-    bid: '1.1000',
-    ask: '1.2000',
-    timestamp: Date.now()
-  },
-  {
-    id: 2,
-    instrumentName: 'EUR/JPY',
-    bid: '2.1000',
-    ask: '2.2000',
-    timestamp: Date.now()
-  },
-  {
-    id: 3,
-    instrumentName: 'GBP/USD',
-    bid: '3.1000',
-    ask: '3.2000',
-    timestamp: Date.now()
-  }
+     id: 2,
+     instrumentName: 'EUR/JPY',
+     bid: '2.1000',
+     ask: '2.2000',
+     timestamp: Date.now()
+   },
+   {
+     id: 3,
+     instrumentName: 'GBP/USD',
+     bid: '3.1000',
+     ask: '3.2000',
+     timestamp: Date.now()
+   }
 ];
 
 

@@ -1,8 +1,8 @@
 import {Injectable, OnDestroy} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Currency, CurrencyBody} from '../interfaces';
-import {Observable, timer, merge, Subject} from 'rxjs';
-import {tap, switchMap, takeUntil} from 'rxjs/operators';
+import {Observable, timer, mergeWith, Subject} from 'rxjs';
+import {tap, switchMap, takeUntil, filter} from 'rxjs/operators';
 import {BaseState} from "../store/base-state";
 import {randomIntIntervalHelper} from '../helpers/random-int-interval.helper';
 import {currencyAdapter} from "./currency-adapter";
@@ -15,16 +15,19 @@ export class CurrencyService extends BaseState<Currency> implements OnDestroy {
   private readonly _instrument$: Observable<CurrencyBody>[] = [];
   private readonly stopPolling = new Subject();
 
-  private readonly _instrumentMerge = () => merge<CurrencyBody>(
-    ...this._instrument$
-  ).pipe(
-    tap(item => {
-      this.updateCurrency(item, item.id);
-    }),
-    takeUntil(this.stopPolling)
-  );
+  private readonly _instrumentMerge = () => {
+    const [first, ...others] = this._instrument$;
+    return first.pipe(
+      mergeWith(...others),
+      tap(item => {
+        this.updateCurrency(item, item.id);
+      }),
+      takeUntil(this.stopPolling)
+    );
+  }
 
   public readonly fetchPrices$ = this.http.get<CurrencyBody[]>('/api/getAllPrices').pipe(
+    filter(items => Boolean(items.length)),
     tap(currencyAdapter.bind(this)),
     switchMap(this._instrumentMerge)
   );
@@ -47,6 +50,7 @@ export class CurrencyService extends BaseState<Currency> implements OnDestroy {
   }
 
   ngOnDestroy() {
-    this.stopPolling.next();
+    this.stopPolling.next(1);
+    this.stopPolling.complete();
   }
 }
