@@ -36,10 +36,15 @@ export class CurrencyService extends BaseState<Currency> implements OnDestroy {
     super();
   }
 
-  private updateCurrency(itemToChange: CurrencyBody, key: number): void {
+  private createUpdatedItems(itemToChange: CurrencyBody, key: number): any {
     const items = {...this.data} as any;
     items[key] = {...itemToChange};
-    this.setData(items);
+    return items;
+  }
+
+  private updateCurrency(itemToChange: CurrencyBody, key: number): void {
+    const updatedItems = this.createUpdatedItems(itemToChange, key);
+    this.setData(updatedItems);
   }
 
   public addInstrumentTimer(instrumentName: string): void {
